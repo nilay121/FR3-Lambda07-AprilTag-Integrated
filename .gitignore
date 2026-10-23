@@ -1,0 +1,29 @@
+# Recordings. Keep data out of the repo; data/sample/ is committed on purpose.
+logs/
+*.csv
+!data/sample/*.csv
+
+# rosbags
+*.db3
+*.mcap
+metadata.yaml
+
+# colcon
+build/
+install/
+log/
+
+# Python
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+
+# TF graph dumps from `ros2 run tf2_tools view_frames`
+frames_*.gv
+frames_*.pdf
+
+# editors / OS
+.vscode/
+.idea/
+*.swp
+.DS_Store

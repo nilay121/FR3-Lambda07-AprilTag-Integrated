@@ -1,0 +1,10 @@
+repositories:
+  fd_sdk_vendor:
+    type: git
+    url: git@github.com:KinesisCTP/fd_sdk_vendor.git
+    version: main
+  forcedimension_ros2:
+    type: git
+    url: git@github.com:KinesisCTP/forcedimension_ros2.git
+    version: main
+

@@ -1,0 +1,47 @@
+diff --git a/franka_example_controllers/src/fr3/cartesian_impedance_example_controller.cpp b/franka_example_controllers/src/fr3/cartesian_impedance_example_controller.cpp
+index f665191..dec28f2 100644
+--- a/franka_example_controllers/src/fr3/cartesian_impedance_example_controller.cpp
++++ b/franka_example_controllers/src/fr3/cartesian_impedance_example_controller.cpp
+@@ -191,7 +191,7 @@ controller_interface::return_type CartesianImpedanceExampleController::update(
+   transform.rotate(orientation.toRotationMatrix());
+ 
+   const TargetPose target = *target_pose_buffer_.readFromRT();
+-  updateMotionTarget(period.seconds(), target.orientation);
++  // updateMotionTarget(period.seconds(), target.orientation);
+ 
+   const CartesianGains target_gains = *cartesian_gains_buffer_.readFromRT();
+   const double target_nullspace_stiffness = *nullspace_stiffness_buffer_.readFromRT();
+@@ -341,4 +341,4 @@ rcl_interfaces::msg::SetParametersResult CartesianImpedanceExampleController::on
+ #include "pluginlib/class_list_macros.hpp"
+ 
+ PLUGINLIB_EXPORT_CLASS(franka_example_controllers::CartesianImpedanceExampleController,
+-                       controller_interface::ControllerInterface)
+\ No newline at end of file
++                       controller_interface::ControllerInterface)
+diff --git a/franka_example_controllers/src/fr3/move_to_start_example_controller.cpp b/franka_example_controllers/src/fr3/move_to_start_example_controller.cpp
+index 04b09c3..79d47c5 100644
+--- a/franka_example_controllers/src/fr3/move_to_start_example_controller.cpp
++++ b/franka_example_controllers/src/fr3/move_to_start_example_controller.cpp
+@@ -84,8 +84,20 @@ CallbackReturn MoveToStartExampleController::on_init() {
+     auto_declare<std::string>("arm_prefix", "");
+     auto_declare<std::vector<double>>("k_gains", {});
+     auto_declare<std::vector<double>>("d_gains", {});
+-    auto_declare<std::vector<double>>("start_joint_configuration",
+-                                      {0.0, -M_PI_4, 0.0, -3.0 * M_PI_4, 0.0, M_PI_2, M_PI_4});
++    // auto_declare<std::vector<double>>("start_joint_configuration",
++    //                                   {0.0, -M_PI_4, 0.0, -3.0 * M_PI_4, 0.0, M_PI_2, M_PI_4});
++    auto_declare<std::vector<double>>(
++        "start_joint_configuration",
++        {
++            0.004401641432195902,
++          -0.24445335566997528,
++          -0.11507163196802139,
++          -2.38798451423645,
++            0.006409268360584974,
++            2.0753865242004395,
++            0.7513229846954346
++        });
++
+   } catch (const std::exception& e) {
+     fprintf(stderr, "Exception thrown during init stage with message: %s \n", e.what());
+     return CallbackReturn::ERROR;

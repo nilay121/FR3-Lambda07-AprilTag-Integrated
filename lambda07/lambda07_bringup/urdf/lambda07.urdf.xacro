@@ -1,0 +1,146 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <xacro:macro name="lambda07_visual_model" params="robot_id:='lambda07'">
+    <material name="lambda07_base_mat">
+      <color rgba="0.08 0.10 0.12 1.0"/>
+    </material>
+    <material name="lambda07_axis_x">
+      <color rgba="0.85 0.12 0.16 1.0"/>
+    </material>
+    <material name="lambda07_axis_y">
+      <color rgba="0.16 0.55 0.25 1.0"/>
+    </material>
+    <material name="lambda07_axis_z">
+      <color rgba="0.12 0.28 0.85 1.0"/>
+    </material>
+    <material name="lambda07_ee_mat">
+      <color rgba="0.95 0.72 0.18 1.0"/>
+    </material>
+
+    <link name="${robot_id}_base">
+      <visual>
+        <origin xyz="0 0 -0.01" rpy="0 0 0"/>
+        <geometry>
+          <box size="0.16 0.16 0.02"/>
+        </geometry>
+        <material name="lambda07_base_mat"/>
+      </visual>
+    </link>
+
+    <link name="${robot_id}_x_link"/>
+
+
+    <link name="${robot_id}_y_link"/>
+
+
+    <link name="${robot_id}_z_link"/>
+
+
+    <link name="${robot_id}_roll_link"/>
+    <link name="${robot_id}_pitch_link"/>
+    <link name="${robot_id}_yaw_link"/>
+
+    <link name="${robot_id}_ee">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <sphere radius="0.018"/>
+        </geometry>
+        <material name="lambda07_ee_mat"/>
+      </visual>
+      <visual>
+        <origin xyz="0.035 0 0" rpy="0 1.57079632679 0"/>
+        <geometry>
+          <cylinder radius="0.003" length="0.07"/>
+        </geometry>
+        <material name="lambda07_axis_x"/>
+      </visual>
+      <visual>
+        <origin xyz="0 0.035 0" rpy="1.57079632679 0 0"/>
+        <geometry>
+          <cylinder radius="0.003" length="0.07"/>
+        </geometry>
+        <material name="lambda07_axis_y"/>
+      </visual>
+      <visual>
+        <origin xyz="0 0 0.035" rpy="0 0 0"/>
+        <geometry>
+          <cylinder radius="0.003" length="0.07"/>
+        </geometry>
+        <material name="lambda07_axis_z"/>
+      </visual>
+    </link>
+
+    <link name="${robot_id}_virtual_clutch_link">
+      <visual>
+        <origin xyz="0 0.035 0" rpy="1.57079632679 0 0"/>
+        <geometry>
+          <cylinder radius="0.004" length="0.07"/>
+        </geometry>
+        <material name="lambda07_axis_y"/>
+      </visual>
+    </link>
+
+    <joint name="${robot_id}_x" type="prismatic">
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <parent link="${robot_id}_base"/>
+      <child link="${robot_id}_x_link"/>
+      <axis xyz="1 0 0"/>
+      <limit effort="12" velocity="1.0" lower="-2" upper="2"/>
+    </joint>
+    <joint name="${robot_id}_y" type="prismatic">
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <parent link="${robot_id}_x_link"/>
+      <child link="${robot_id}_y_link"/>
+      <axis xyz="0 1 0"/>
+      <limit effort="12" velocity="1.0" lower="-2" upper="2"/>
+    </joint>
+    <joint name="${robot_id}_z" type="prismatic">
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <parent link="${robot_id}_y_link"/>
+      <child link="${robot_id}_z_link"/>
+      <axis xyz="0 0 1"/>
+      <limit effort="12" velocity="1.0" lower="-2" upper="2"/>
+    </joint>
+
+    <!-- The SDK returns wrist joint angles in physical order: axis 0, axis 1, axis 2.
+         On Lambda.07 axis 0 is parallel to world Z, so this visual chain uses Z/Y/X. -->
+    <joint name="${robot_id}_roll" type="revolute">
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <parent link="${robot_id}_z_link"/>
+      <child link="${robot_id}_roll_link"/>
+      <axis xyz="0 0 1"/>
+      <limit effort="0.4" velocity="10.0" lower="-3.14159265359" upper="3.14159265359"/>
+    </joint>
+    <joint name="${robot_id}_pitch" type="revolute">
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <parent link="${robot_id}_roll_link"/>
+      <child link="${robot_id}_pitch_link"/>
+      <axis xyz="0 1 0"/>
+      <limit effort="0.4" velocity="10.0" lower="-3.14159265359" upper="3.14159265359"/>
+    </joint>
+    <joint name="${robot_id}_yaw" type="revolute">
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <parent link="${robot_id}_pitch_link"/>
+      <child link="${robot_id}_yaw_link"/>
+      <axis xyz="1 0 0"/>
+      <limit effort="0.4" velocity="10.0" lower="-3.14159265359" upper="3.14159265359"/>
+    </joint>
+
+    <joint name="${robot_id}_tool" type="fixed">
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <parent link="${robot_id}_yaw_link"/>
+      <child link="${robot_id}_ee"/>
+    </joint>
+
+    <joint name="${robot_id}_clutch" type="prismatic">
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <parent link="${robot_id}_ee"/>
+      <child link="${robot_id}_virtual_clutch_link"/>
+      <!-- Virtualized gripper/clutch state follows the handle-frame Y' side axis. -->
+      <axis xyz="0 1 0"/>
+      <limit effort="12" velocity="1.0" lower="-0.05" upper="0.05"/>
+    </joint>
+  </xacro:macro>
+</robot>
+
